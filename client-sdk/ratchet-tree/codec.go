@@ -5,7 +5,7 @@ package ratchettree
 
 import (
 	"bufio"
-	"fmt"
+	"encoding/json"
 	"os"
 	"strconv"
 	"strings"
@@ -13,7 +13,7 @@ import (
 
 var dbFile = "mls_db.txt"
 
-func LoadFromDisk() (*TreeNode, error) {
+func LoadFromDisk() (*MLSTree, error) {
 	f, err := os.Open(dbFile)
 	if err != nil {
 		return nil, err
@@ -21,6 +21,12 @@ func LoadFromDisk() (*TreeNode, error) {
 	defer f.Close()
 	strBuf := strings.Builder{}
 	reader := bufio.NewReader(f)
+	line, err := reader.ReadString('\n')
+	localEpoch, err := strconv.Atoi(line)
+	if err != nil {
+		return nil, err
+	}
+	ratchetTree := &MLSTree{Epoch: localEpoch}
 	for {
 		line, err := reader.ReadString('\n')
 		if err != nil {
@@ -28,10 +34,13 @@ func LoadFromDisk() (*TreeNode, error) {
 		}
 		strBuf.WriteString(line)
 	}
-	return deserialize(strBuf.String()), nil
+	ratchetTree.Root = deserialize(strBuf.String())
+	return ratchetTree, nil
 }
-func WriteToDisk(root *TreeNode) error {
-	data := serialize(root)
+func WriteToDisk(tree *MLSTree) error {
+	data := serialize(tree.Root)
+	epoch := strconv.Itoa(tree.Epoch)
+	data = epoch + "\n" + data
 	err := os.WriteFile(dbFile, []byte(data), 0666)
 	if err != nil {
 		return err
@@ -44,8 +53,11 @@ func serialize(root *TreeNode) string {
 	if root == nil {
 		return "."
 	}
-	rs := fmt.Sprint(root.Val)
-	return rs + "\n" + serialize(root.Left) + "\n" + serialize(root.Right)
+	nodeData, err := json.Marshal(root.Val)
+	if err != nil {
+		panic(err)
+	}
+	return string(nodeData) + "\n" + serialize(root.Left) + "\n" + serialize(root.Right)
 }
 
 // Deserializes your encoded data to tree.
@@ -59,13 +71,12 @@ func dfs(a []string, idx int) (*TreeNode, int) {
 	if idx >= len(a) || a[idx] == "." {
 		return nil, idx + 1
 	}
-	root := &TreeNode{Val: atoi(a[idx])}
+	var nodeData NodeData
+	if err := json.Unmarshal([]byte(a[idx]), &nodeData); err != nil {
+		panic(err)
+	}
+	root := &TreeNode{Val: &nodeData}
 	root.Left, idx = dfs(a, idx+1)
 	root.Right, idx = dfs(a, idx)
 	return root, idx
-}
-
-func atoi(s string) int {
-	rs, _ := strconv.Atoi(s)
-	return rs
 }

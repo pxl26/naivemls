@@ -4,8 +4,15 @@ https://datatracker.ietf.org/doc/rfc9420/#:~:text=for%20unmerged%20leaves).-,App
 */
 package ratchettree
 
+type NodeData struct {
+	LeafID     string
+	PublicKey  string
+	PrivateKey string
+}
+
 type TreeNode struct {
-	Val   any // Val is nil => empty node
+	Val *NodeData
+
 	Left  *TreeNode
 	Right *TreeNode
 }
@@ -19,7 +26,8 @@ func (t *TreeNode) IsBlank() bool {
 }
 
 type MLSTree struct {
-	Root *TreeNode
+	Root  *TreeNode
+	Epoch int
 }
 
 /*
@@ -30,7 +38,7 @@ https://datatracker.ietf.org/doc/html/rfc9420
 		Otherwise, the tree is extended to the right as described in Section 7.7,
 		and L is assigned the leftmost new blank leaf."
 */
-func (t *MLSTree) AddMember(val any) {
+func (t *MLSTree) AddMember(val *NodeData) {
 	if t.Root == nil {
 		t.Root = &TreeNode{Val: val}
 		return
