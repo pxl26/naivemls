@@ -1,7 +1,0 @@
-go 1.26.2
-
-use (
-	./client-sdk
-	./e2ee-service
-	./message-service
-)

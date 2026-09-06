@@ -1,5 +1,5 @@
 // https://datatracker.ietf.org/doc/html/rfc9420#section-8
-package mls
+package ratchettree
 
 import (
 	"crypto/hkdf"
@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/curve25519"
 )
 
-// DeriveParentSecret derives a parent secret from the current node secret.
+// DeriveParentSecret derives a parent secret from the current node secret
 func DeriveParentSecret(secret []byte) []byte {
 	return expandWithLabel(secret, "parent_secret", 32)
 }
@@ -28,13 +28,11 @@ func GenerateKeypair(secret []byte) (privateKeyBytes, publicKeyBytes []byte) {
 	return privateKey[:], publicKey[:]
 }
 
-// deriveNodeSecret generates the key-pair material for a node.
 func deriveNodeSecret(secret []byte) []byte {
 	return expandWithLabel(secret, "generate_keypair", 32)
 }
 
 // ExpandWithLabel(Secret, Label, Context, Length) = KDF.Expand(Secret, KDFLabel, Length)
-// KDFLabel = Context || L || Label
 func expandWithLabel(secret []byte, label string, length int) []byte {
 	label = "MLS 1.0 " + label // TODO: use the RFC 9420 section 8.3 label structure.
 	rs, err := hkdf.Expand(sha256.New, secret, label, length)

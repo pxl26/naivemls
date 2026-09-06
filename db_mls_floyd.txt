@@ -1,0 +1,19 @@
+4
+{"NodeID":"eeadc8a4-cd8b-44c7-b76e-c39219422062","PublicKey":"Hi/0Voj0vyCgkEHpm0YMgLNQCdxu0v7mj6q+Wf/CdEE=","PrivateKey":"6JDklGZaMVFugvTVjNATb2ANh7wblRTu8Y/VvQ2ynR8=","Secret":"QwEsR018FZ65Dq/Ub+8+hFYpVtxdXvEH3D3A57akCSI="}
+{"NodeID":"ec247cb5-a7fa-475d-8508-7375be8a5812","PublicKey":"VebE0MwmZvJZIXJAREXyDZjuFkztp4nHLx57B+R/pCI=","PrivateKey":null,"Secret":null}
+{"NodeID":"e896978c-acc5-48ca-abaa-6c9f27640502","PublicKey":"BGvJf7wJZ1y0pGw4CYSxNlCtQ/uuWOm6JkEpwakM3kg=","PrivateKey":null,"Secret":null}
+.
+.
+null
+.
+.
+{"NodeID":"561b8990-bbc3-4ab7-95c8-209a8583b237","PublicKey":"NLvEkb0owRdjM/HcPGZl5cVW4JQxigEooLPxICsOU1o=","PrivateKey":"letNYL1MK9VAEXA+xqNLnbxzGD+2ybhfqYv5iwkjbHY=","Secret":"ZBfiuvdqlfX/ySXSs2VWT3MLIi1vFM2g6Dwzd4UNKNI="}
+.
+.
+
+# Ratchet tree
+root: eeadc8a4-cd8b-44c7-b76e-c39219422062 [node, private=true]
+├── L: ec247cb5-a7fa-475d-8508-7375be8a5812 [node, private=false]
+│   ├── L: e896978c-acc5-48ca-abaa-6c9f27640502 [leaf, private=false]
+│   └── R: (blank)
+└── R: 561b8990-bbc3-4ab7-95c8-209a8583b237 [leaf, private=true]
